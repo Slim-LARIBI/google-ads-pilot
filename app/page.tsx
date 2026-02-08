@@ -1,182 +1,183 @@
 'use client';
 
-// Page Dashboard (Overview) - Multi-channel
-import Header from '@/components/layout/Header';
-import KPICard from '@/components/dashboard/KPICard';
-import HealthScore from '@/components/dashboard/HealthScore';
+import Link from 'next/link';
+import Button from '@/components/shared/Button';
 import Card from '@/components/shared/Card';
 import Badge from '@/components/shared/Badge';
-import Button from '@/components/shared/Button';
-import ChannelSelector from '@/components/shared/ChannelSelector';
-import ComingSoon from '@/components/shared/ComingSoon';
-import { AlertTriangle, CheckCircle, ArrowRight } from 'lucide-react';
-import Link from 'next/link';
+import { ArrowRight, Shield, Zap, Search, BarChart3, Settings2 } from 'lucide-react';
 
-
-import { useChannel } from '@/contexts/ChannelContext';
-import { mockAlerts, mockActions } from '@/data/mock';
-import {
-  mockKPIsByChannel,
-  mockHealthScoreByChannel,
-  CHANNELS,
-} from '@/data/mockByChannel';
-
-export default function DashboardPage() {
-  const { selectedChannel } = useChannel();
-  const safeChannel = (selectedChannel ?? 'sea') as keyof typeof CHANNELS;
-
-  // ✅ filets de sécurité si les objets ne sont pas prêts / incomplets
-  const channelInfo =
-    (CHANNELS as any)?.[safeChannel] ?? {
-      label: 'SEA (Google Ads)',
-      isActive: true,
-    };
-
-  const kpis = (mockKPIsByChannel as any)?.[safeChannel] ?? [];
-
-  const healthScore = (mockHealthScoreByChannel as any)?.[safeChannel] ?? 0;
-
-  // Filtrer les données par channel sélectionné
-  const criticalAlerts = (mockAlerts ?? [])
-    .filter((a: any) => a.channel === safeChannel && a.priority === 'P0')
-    .slice(0, 3);
-
-  const pendingActions = (mockActions ?? [])
-    .filter((a: any) => a.channel === safeChannel && a.status === 'pending')
-    .slice(0, 3);
-
+export default function HomePage() {
   return (
-    <div>
-      <ChannelSelector />
+    <div className="relative">
+      {/* Background decoration */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+        <div className="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-primary-200 blur-3xl opacity-60" />
+        <div className="absolute top-40 -left-28 h-80 w-80 rounded-full bg-blue-100 blur-3xl opacity-70" />
+        <div className="absolute bottom-0 right-10 h-64 w-64 rounded-full bg-gray-100 blur-3xl opacity-90" />
+      </div>
 
-      <Header
-        title="Overview"
-        subtitle={`Vue d'ensemble des performances ${channelInfo.label}`}
-      />
-
-      {/* Si channel inactif, afficher Coming Soon */}
-      {!channelInfo.isActive ? (
-        <ComingSoon
-          channel={channelInfo.label}
-          message={`Le dashboard ${channelInfo.label} sera disponible prochainement avec des KPIs et métriques spécifiques au canal.`}
-        />
-      ) : (
-        <>
-          {/* KPIs Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {kpis.map((kpi: any, index: number) => (
-              <KPICard key={index} kpi={kpi} />
-            ))}
+      <div className="relative max-w-6xl mx-auto">
+        {/* Hero */}
+        <div className="pt-6 pb-10">
+          <div className="flex flex-wrap items-center gap-2 mb-5">
+            <Badge variant="P1">MVP</Badge>
+            <span className="text-sm text-gray-500">
+              Multi-module • SEA + SEO • Local first
+            </span>
           </div>
 
-          {/* Health Score + Alertes critiques */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-            <div className="lg:col-span-1">
-              <HealthScore score={healthScore} />
-            </div>
+          <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-gray-900">
+            Marketing Command Center
+          </h1>
+          <p className="mt-3 text-lg text-gray-600 max-w-2xl">
+            Une plateforme pour <span className="font-semibold">centraliser</span> tes actions marketing,
+            transformer des insights en <span className="font-semibold">règles automatisées</span>,
+            et garder un contrôle humain sur l’exécution.
+          </p>
 
-            <div className="lg:col-span-2">
-              <Card
-                title="Alertes Critiques (P0)"
-                actions={
-                  <Link href="/alerts">
-                    <Button variant="ghost" size="sm">
-                      Voir tout <ArrowRight size={16} />
+          <div className="mt-6 flex flex-wrap gap-3">
+            {/* On garde des liens simples. On corrigera la navigation ensuite. */}
+            <Link href="/sea/overview">
+              <Button variant="primary" icon={<ArrowRight size={18} />}>
+                Démarrer avec SEA
+              </Button>
+            </Link>
+
+            <Link href="/seo/overview">
+              <Button variant="secondary" icon={<Search size={18} />}>
+                Explorer SEO
+              </Button>
+            </Link>
+          </div>
+
+          {/* Trust / highlights */}
+          <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+            <Card>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 text-primary-600">
+                  <Zap size={18} />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">Rapide à piloter</div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Un cockpit clair : Overview, Rules, Alerts, Actions.
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            <Card>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 text-primary-600">
+                  <Shield size={18} />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">Contrôle & sécurité</div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Règles versionnées, activation/désactivation, et validations.
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            <Card>
+              <div className="flex items-start gap-3">
+                <div className="mt-1 text-primary-600">
+                  <BarChart3 size={18} />
+                </div>
+                <div>
+                  <div className="font-semibold text-gray-900">Scalable</div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Module SEA aujourd’hui, module SEO demain, Meta ensuite.
+                  </p>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </div>
+
+        {/* Modules */}
+        <div className="pb-10">
+          <div className="flex items-end justify-between gap-4 mb-4">
+            <div>
+              <h2 className="text-xl font-semibold text-gray-900">Choisis un module</h2>
+              <p className="text-sm text-gray-600">
+                Une navigation simple, des écrans prêts à présenter.
+              </p>
+            </div>
+            <div className="text-xs text-gray-500 flex items-center gap-2">
+              <Settings2 size={14} />
+              <span>Build local • prêt pour prod plus tard</span>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <Card>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-lg font-semibold text-gray-900">SEA (Google Ads)</div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Rules engine + actions + alerting. Objectif : industrialiser la performance.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Badge variant="P0">Rules CRUD</Badge>
+                    <Badge variant="P1">Alerts</Badge>
+                    <Badge variant="P2">Actions</Badge>
+                  </div>
+                </div>
+
+                <div className="shrink-0">
+                  <Link href="/sea/overview">
+                    <Button variant="primary" icon={<ArrowRight size={18} />}>
+                      Ouvrir SEA
                     </Button>
                   </Link>
-                }
-              >
-                {criticalAlerts.length > 0 ? (
-                  <div className="space-y-4">
-                    {criticalAlerts.map((alert: any) => (
-                      <div
-                        key={alert.id}
-                        className="flex items-start gap-4 p-4 bg-danger-50 border border-danger-200 rounded-lg"
-                      >
-                        <AlertTriangle
-                          size={20}
-                          className="text-danger-600 flex-shrink-0 mt-0.5"
-                        />
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-1">
-                            <h4 className="font-semibold text-gray-900">
-                              {alert.title}
-                            </h4>
-                            <Badge variant="P0">P0</Badge>
-                          </div>
-                          <p className="text-sm text-gray-700">{alert.message}</p>
-                          <p className="text-xs text-gray-500 mt-2">
-                            Campagne: {alert.campaign}
-                          </p>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    Aucune alerte critique pour ce channel
-                  </div>
-                )}
-              </Card>
-            </div>
-          </div>
+                </div>
+              </div>
 
-          {/* Actions en attente de validation */}
-          <Card
-            title="Actions en attente de validation"
-            actions={
-              <Link href="/actions">
-                <Button variant="ghost" size="sm">
-                  Voir tout <ArrowRight size={16} />
-                </Button>
-              </Link>
-            }
-          >
-            {pendingActions.length > 0 ? (
-              <div className="space-y-3">
-                {pendingActions.map((action: any) => (
-                  <div
-                    key={action.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 border border-gray-200 rounded-lg hover:bg-gray-100 transition-colors"
-                  >
-                    <div className="flex items-start gap-3">
-                      <CheckCircle
-                        size={20}
-                        className="text-warning-600 flex-shrink-0 mt-0.5"
-                      />
-                      <div>
-                        <div className="flex items-center gap-2 mb-1">
-                          <h4 className="font-medium text-gray-900">
-                            {String(action.type)
-                              .replace(/_/g, ' ')
-                              .replace(/\b\w/g, (l) => l.toUpperCase())}
-                          </h4>
-                          <Badge variant={action.priority}>
-                            {action.priority}
-                          </Badge>
-                        </div>
-                        <p className="text-sm text-gray-700">{action.campaign}</p>
-                        <p className="text-xs text-gray-500 mt-1">
-                          {action.reason}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-sm font-medium text-success-600">
-                        {action.estimatedImpact}
-                      </p>
-                    </div>
+              <div className="mt-4 text-xs text-gray-500">
+                Parfait pour une démo investisseur : “règles → décisions → exécution”.
+              </div>
+            </Card>
+
+            <Card>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <div className="text-lg font-semibold text-gray-900">SEO</div>
+                  <p className="text-sm text-gray-600 mt-1">
+                    Overview (mock) + préparation Scan / Issues / Pages / Keywords.
+                  </p>
+
+                  <div className="mt-4 flex flex-wrap gap-2">
+                    <Badge variant="P1">Overview</Badge>
+                    <Badge variant="P2">Scan</Badge>
+                    <Badge variant="P2">Issues</Badge>
                   </div>
-                ))}
+                </div>
+
+                <div className="shrink-0">
+                  <Link href="/seo/overview">
+                    <Button variant="secondary" icon={<Search size={18} />}>
+                      Ouvrir SEO
+                    </Button>
+                  </Link>
+                </div>
               </div>
-            ) : (
-              <div className="text-center py-8 text-gray-500">
-                Aucune action en attente pour ce channel
+
+              <div className="mt-4 text-xs text-gray-500">
+                Prochain upgrade : “Run scan” → résultats → règles SEO automatiques.
               </div>
-            )}
-          </Card>
-        </>
-      )}
+            </Card>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="pb-6 border-t border-gray-200 pt-6 text-sm text-gray-500 flex flex-wrap justify-between gap-2">
+          <span>© {new Date().getFullYear()} Marketing Command Center</span>
+          <span>V1 • Local • Supabase ready</span>
+        </div>
+      </div>
     </div>
   );
 }
